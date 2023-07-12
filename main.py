@@ -81,15 +81,39 @@ class TopSideWidgetProfileContact(QFrame):
 class RightSideWidgetLayout(QVBoxLayout):
     def __init__(self):
         super().__init__()
+class MessagesFrame(QFrame):
+    def __init__(self,parent):
+        super().__init__(parent)
+        self.resize(parent.width(),parent.height() - 80)
+        self.setStyleSheet("background-color:rgb(35, 35, 35)")
+        messagesList = MessagesList()
+        self.setLayout(messagesList)
+class MessagesList(QGridLayout):
+    def __init__(self,parent):
+        super().__init__(parent)
+        self.setContentsMargins(0,0,0,0)
+class TextFrame(QFrame):
+    def __init__(self,parent):
+        super().__init__(parent)
+        self.setStyleSheet("background-color:rgb(35, 35, 35)")
+class CentralWidget(QWidget):
+    def __init__(self,parent):
+        super().__init__(parent)
+class MainLayout(QHBoxLayout):
+    def __init__(self):
+        super().__init__()
+class RightSideWidget(QWidget):
+    def __init__(self,parent):
+        super().__init__(parent)
+        self.setStyleSheet("background-color:rgb(35, 35, 35);border-radius:20px")
+
 class ui(QMainWindow):
     def __init__(self):
         super().__init__()
-        central = QWidget(self)
-        mainlayout = QHBoxLayout()
-        rightsidewidget = QWidget(central)
-        rightsidewidget.setStyleSheet("background-color:rgb(35, 35, 35);border-radius:20px")
-        textFrame = QFrame(rightsidewidget)
-        textFrame.setStyleSheet("background-color:rgb(35, 35, 35)")
+        central = CentralWidget(self)
+        mainlayout = MainLayout()
+        rightsidewidget = RightSideWidget(central)
+        textFrame = TextFrame(rightsidewidget)
         rightSideLayout = RightSideWidgetLayout()
 
         self.resize(1000,700)
@@ -102,26 +126,26 @@ class ui(QMainWindow):
         leftSide.setLayout(grid)
         grid.setContentsMargins(4,0,0,0)
         for i in range(10):
-            contant = QFrame(leftSide)
-            #contant.resize(200,100)
+            contact = QFrame(leftSide)
+            #contact.resize(200,100)
             ak = QGridLayout()
-            yi = QTextBrowser(contant)
+            yi = QTextBrowser(contact)
             ak.setColumnStretch
             yi.setStyleSheet("background-color: rgb(117, 19, 255)")
             yi.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             ak.addWidget(yi,0,1)
-            rt = QTextBrowser(contant)
+            rt = QTextBrowser(contact)
             rt.setStyleSheet("background-color: rgb(117, 19, 255)")
             rt.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             ak.addWidget(rt,1,1)
-            contant.setStyleSheet("background-color:rgb(47, 0, 148);border-bottom:0px solid rgb(0, 31, 131);border-radius:10px")
-            self.photo = frame(contant)
-            contant.setMaximumHeight(100)
-            #self.photo.setGeometry(10,contant.height() / 2,contant.width() * 50 / 100,contant.width() * 50 / 100)
+            contact.setStyleSheet("background-color:rgb(47, 0, 148);border-bottom:0px solid rgb(0, 31, 131);border-radius:10px")
+            self.photo = frame(contact)
+            contact.setMaximumHeight(100)
+            #self.photo.setGeometry(10,contact.height() / 2,contact.width() * 50 / 100,contact.width() * 50 / 100)
             ak.addWidget(self.photo,0,0)
-            contant.setLayout(ak)
+            contact.setLayout(ak)
 
-            grid.addWidget(contant,i,1)
+            grid.addWidget(contact,i,1)
         #rightsidewidget.setGeometry(200,0,self.width()-200,self.height())
         #rightsidewidget.setMaximumSize(1920,1080)
         
@@ -134,12 +158,8 @@ class ui(QMainWindow):
         #lay.addLayout(we,Qt.AlignmentFlag.AlignLeft)
         textFrame.setLayout(lay)
         #########################
-        messagesFrame = QFrame(rightsidewidget)
-        messagesFrame.resize(rightsidewidget.width(),rightsidewidget.height() - 80)
-        messagesFrame.setStyleSheet("background-color:rgb(35, 35, 35)")
-        messagesList = QGridLayout()
-        messagesList.setContentsMargins(0,0,0,0)
-        messagesFrame.setLayout(messagesList)
+        messagesFrame = MessagesFrame(rightsidewidget)
+        
         for i in range(0,8,4):
             messagesList.addWidget(frame(messagesFrame),i,0,Qt.AlignmentFlag.AlignLeft)
             messagesList.addLayout(messagearea(messagesFrame,True),i+1,0,Qt.AlignmentFlag.AlignLeft)
