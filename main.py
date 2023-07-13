@@ -15,14 +15,14 @@ class SendButton(QLabel):
     def __init__(self,parent):
         super().__init__(parent)
         self.setScaledContents(True)
-        self.setPixmap(QPixmap("telqt/s.png"))
+        self.setPixmap(QPixmap("ChatApp/s.png"))
         self.setMaximumSize(40,40)
         self.setMinimumSize(40,40)
 class FileButton(QLabel):
     def __init__(self,parent):
         super().__init__(parent)
         self.setScaledContents(True)
-        self.setPixmap(QPixmap("telqt/f.png"))
+        self.setPixmap(QPixmap("ChatApp/f.png"))
         self.setMaximumSize(40,40)
         self.setMinimumSize(40,40)
 class messagearea(QHBoxLayout):
@@ -31,20 +31,22 @@ class messagearea(QHBoxLayout):
         pho = QLabel(parent)
         pho.setMaximumSize(300,100)
         pho.setScaledContents(True)
-        ph = QPixmap("telqt/messagearea.png")
-        #pho.setStyleSheet("background-color:none;border:0px")
+        ph = QPixmap("ChatApp/messagearea.png")
+        pho.setStyleSheet("background-color:none;border:0px")
         if not flip:
             trans = QTransform()
             trans.scale(-1,1)
             ph = ph.transformed(trans)
-        pho.setPixmap(ph)
+        #messageText = QTextBrowser(pho)
+        #messageText.setText("yo")
+        #messageText.setStyleSheet("background-color:rgba(0,0,0,0)")
         self.addWidget(pho)
         self.setContentsMargins(25,0,25,0)
 class frame(QLabel):
     def __init__(self,parent:QFrame | QWidget):
         super().__init__(parent)
         self.setStyleSheet("background-color:none;border-bottom:0px solid rgb(35, 35, 35)")
-        ph = QPixmap("telqt/profile.png")
+        ph = QPixmap("ChatApp/profile.png")
         self.setScaledContents(True)
         self.setPixmap(ph)  
         self.setMaximumSize( 50, 50)
@@ -52,12 +54,16 @@ class frame(QLabel):
 class leftSideWidget(QFrame):
     def __init__(self,parent):
         super().__init__(parent)
-        
+        self.setMinimumWidth(400)
         self.resize(200,parent.height())
         self.setMinimumSize(200,800)
         self.setMaximumWidth(300)
+        self.setStyleSheet("border-radius:20px")
         #leftSide.setMaximumSize(400,1080)
-
+        #grid = ContactsLayout()
+        #self.setLayout(grid)
+        #grid.setContentsMargins(4,0,0,0)
+        self.setLayout(ContactsLayout(self))
 class TextFrameLayout(QHBoxLayout):
     def __init__(self,parent):
         super().__init__()
@@ -81,52 +87,51 @@ class TopSideWidgetProfileContact(QFrame):
 class RightSideWidgetLayout(QVBoxLayout):
     def __init__(self):
         super().__init__()
-class MessagesFrame(QFrame):
+class MessagesFrame(QScrollArea):
     def __init__(self,parent):
         super().__init__(parent)
-        self.resize(parent.width(),parent.height() - 80)
+        QPropertyAnimation()
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setWidgetResizable(True)
+        wid = QFrame()
         self.setStyleSheet("background-color:rgb(35, 35, 35)")
-        messagesList = MessagesList()
-        self.setLayout(messagesList)
+        self.setWidget(wid)
+        self.messagesList = MessagesList(self)
+        wid.setLayout(self.messagesList)
+    #def add_message(self,text):
+
+
 class MessagesList(QGridLayout):
     def __init__(self,parent):
-        super().__init__(parent)
-        self.setContentsMargins(0,0,0,0)
+        super().__init__()
+        self.setContentsMargins(0,0,0,5)
+        for i in range(0,16,4):          
+            self.addWidget(frame(parent),i,0,Qt.AlignmentFlag.AlignLeft)
+            self.addLayout(messagearea(parent,True),i+1,0,Qt.AlignmentFlag.AlignLeft)
+            self.addWidget(frame(parent),i+2,1,Qt.AlignmentFlag.AlignRight)
+            self.addLayout(messagearea(parent),i+3,1,Qt.AlignmentFlag.AlignRight)
 class TextFrame(QFrame):
     def __init__(self,parent):
         super().__init__(parent)
-        self.setStyleSheet("background-color:rgb(35, 35, 35)")
+        #self.setStyleSheet("background-color:rgb(35, 35, 35)")
+        self.setStyleSheet("background-color:none")
 class CentralWidget(QWidget):
     def __init__(self,parent):
         super().__init__(parent)
 class MainLayout(QHBoxLayout):
     def __init__(self):
         super().__init__()
-class RightSideWidget(QWidget):
+class RightSideWidget(QFrame):
     def __init__(self,parent):
         super().__init__(parent)
         self.setStyleSheet("background-color:rgb(35, 35, 35);border-radius:20px")
-
-class ui(QMainWindow):
-    def __init__(self):
+class ContactsLayout(QVBoxLayout):
+    def __init__(self,parent):
         super().__init__()
-        central = CentralWidget(self)
-        mainlayout = MainLayout()
-        rightsidewidget = RightSideWidget(central)
-        textFrame = TextFrame(rightsidewidget)
-        rightSideLayout = RightSideWidgetLayout()
-
-        self.resize(1000,700)
-        self.setStyleSheet("background-color:rgba(46, 0, 182, 0.4)")
-        leftSide = leftSideWidget(central)
-        #
-        #leftSide.setStyleSheet("background-color:rgb(0, 4, 82)")
-        grid = QGridLayout()
-        grid.setVerticalSpacing(4)
-        leftSide.setLayout(grid)
-        grid.setContentsMargins(4,0,0,0)
+        self.setSpacing(4)
         for i in range(10):
-            contact = QFrame(leftSide)
+            contact = ContactFrame(parent=parent)
             #contact.resize(200,100)
             ak = QGridLayout()
             yi = QTextBrowser(contact)
@@ -145,7 +150,25 @@ class ui(QMainWindow):
             ak.addWidget(self.photo,0,0)
             contact.setLayout(ak)
 
-            grid.addWidget(contact,i,1)
+            self.addWidget(contact)
+class ContactFrame(QFrame):
+    def __init__(self,parent):
+        super().__init__(parent)
+
+        
+class ui(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        central = CentralWidget(self)
+        mainlayout = MainLayout()
+        rightsidewidget = RightSideWidget(central)
+        textFrame = TextFrame(rightsidewidget)
+        rightSideLayout = RightSideWidgetLayout()
+        self.resize(1000,700)
+        self.setStyleSheet("background-color:rgba(46, 0, 182, 0.4)")
+        #
+        #leftSide.setStyleSheet("background-color:rgb(0, 4, 82)")
+        
         #rightsidewidget.setGeometry(200,0,self.width()-200,self.height())
         #rightsidewidget.setMaximumSize(1920,1080)
         
@@ -160,13 +183,6 @@ class ui(QMainWindow):
         #########################
         messagesFrame = MessagesFrame(rightsidewidget)
         
-        for i in range(0,8,4):
-            messagesList.addWidget(frame(messagesFrame),i,0,Qt.AlignmentFlag.AlignLeft)
-            messagesList.addLayout(messagearea(messagesFrame,True),i+1,0,Qt.AlignmentFlag.AlignLeft)
-            messagesList.addWidget(frame(messagesFrame),i+2,1,Qt.AlignmentFlag.AlignRight)
-            messagesList.addLayout(messagearea(messagesFrame),i+3,1,Qt.AlignmentFlag.AlignRight)
-        mainlayout.addWidget(leftSide)
-        mainlayout.addWidget(rightsidewidget)
         #central.setLayout(mainlayout)
         
         topSideWidgetProfileContact = QFrame(rightsidewidget)
@@ -176,7 +192,7 @@ class ui(QMainWindow):
         la.setMaximumSize(40,40)
         la.setMinimumSize(40,40)
         la.setScaledContents(True)
-        la.setPixmap(QPixmap("telqt/profile.png"))
+        la.setPixmap(QPixmap("ChatApp/profile.png"))
         profiletopSideLayout.addWidget(la)
         topSideWidgetProfileContact.setLayout(profiletopSideLayout)
         rightSideLayout.addWidget(topSideWidgetProfileContact)
@@ -186,7 +202,10 @@ class ui(QMainWindow):
         rightSideLayout.setStretch(1,9)
         rightSideLayout.setStretch(2,1)
         rightsidewidget.setLayout(rightSideLayout)
-        leftSide.setMinimumWidth(400)
+        leftSide = leftSideWidget(central)
+
+        mainlayout.addWidget(leftSide)
+        mainlayout.addWidget(rightsidewidget)
         central.setLayout(mainlayout)
         self.setCentralWidget(central)
 
