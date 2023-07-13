@@ -37,9 +37,11 @@ class messagearea(QHBoxLayout):
             trans = QTransform()
             trans.scale(-1,1)
             ph = ph.transformed(trans)
-        #messageText = QTextBrowser(pho)
-        #messageText.setText("yo")
-        #messageText.setStyleSheet("background-color:rgba(0,0,0,0)")
+        pho.setPixmap(ph)
+        messageText = QTextBrowser(pho)
+        messageText.setText("Hello World")
+        messageText.setStyleSheet("background-color:rgba(0,0,0,0);color:white;"
+                                  "padding-left:10px;padding-top:15px")
         self.addWidget(pho)
         self.setContentsMargins(25,0,25,0)
 class frame(QLabel):
@@ -97,8 +99,8 @@ class MessagesFrame(QScrollArea):
         wid = QFrame()
         self.setStyleSheet("background-color:rgb(35, 35, 35)")
         self.setWidget(wid)
-        self.messagesList = MessagesList(self)
-        wid.setLayout(self.messagesList)
+        messagesList = MessagesList(self)
+        wid.setLayout(messagesList)
     #def add_message(self,text):
 
 
@@ -143,7 +145,8 @@ class ContactsLayout(QVBoxLayout):
             rt.setStyleSheet("background-color: rgb(117, 19, 255)")
             rt.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             ak.addWidget(rt,1,1)
-            contact.setStyleSheet("background-color:rgb(47, 0, 148);border-bottom:0px solid rgb(0, 31, 131);border-radius:10px")
+            contact.setStyleSheet("background-color:rgb(47, 0, 148);"
+                                  "border-bottom:0px solid rgb(0, 31, 131);border-radius:10px")
             self.photo = frame(contact)
             contact.setMaximumHeight(100)
             #self.photo.setGeometry(10,contact.height() / 2,contact.width() * 50 / 100,contact.width() * 50 / 100)
