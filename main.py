@@ -109,8 +109,9 @@ class MessagesList(QGridLayout):
         self.parent = parent
         self.setContentsMargins(0,0,0,5)
     def add_message_layout(self,text):
-        self.addWidget(frame(self.parent),self.rowCount() + 1,0,Qt.AlignmentFlag.AlignLeft)
-        self.addLayout(messagearea(self.parent,text,True),self.rowCount() + 1,0,Qt.AlignmentFlag.AlignLeft)
+            
+            self.addWidget(frame(self.parent),self.rowCount() + 1,0,Qt.AlignmentFlag.AlignLeft)
+            self.addLayout(messagearea(self.parent,text,True),self.rowCount() + 1,0,Qt.AlignmentFlag.AlignLeft)
 class TextFrame(QFrame):
     def __init__(self,parent):
         super().__init__(parent)
